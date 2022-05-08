@@ -88,7 +88,9 @@ public:
 
 BP_Character是一个蓝图类，这个类继承了ARPGCharacterBase。我们来看看这个类中有哪些Component。
 
-![BP_Character组件](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/BP_Character01.png)
+![](../Images/BP_Character01.png)
+
+
 
 ### 4.1.3 BP_PlayerCharacter
 
