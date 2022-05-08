@@ -2,8 +2,6 @@
 
 [TOC]
 
-
-
 ## 1.  关于ActionRPG
 
 ### 1.1  ActionRPG简介
@@ -11,6 +9,10 @@
 ### 1.2  ActionRPG的安装方法
 
 ### 1.3 ActionRPG的学习途径
+
+### 1.4 关于本文档
+
+本文档地址：https://github.com/Nicholala/ActionPRGDocumentation
 
 ## 2. UE4 GamePlay架构
 
@@ -34,11 +36,11 @@ Gameplay Ability System(GAS)是一个高度灵活的框架，可用于构建你�
 
 本章介绍了ActionRPG项目中各项功能的实现方法，当然，ActionRPG是一个庞大复杂且在不断更新的项目，同时本人对UE4的理解水平还有待提升，因此本章介绍的功能实现可能与ActionRPG真正实现方法有一定出入，
 
-### 4.1 角色与摄像机移动
+### 4.1 角色与摄像机的移动
 
 ### 4.1.1  ARPGCharacterBase
 
-要让角色动起来，首先得有个角色。而ActionRPG中游戏的基类，就是ARPGCharacterBase。我们可以看部分ARPGCharacterBase.h文件中的代码来大致了解ARPGCharacterBase的作用。
+要让角色动起来，首先得有个角色。而ActionRPG中游戏的基类，就是ARPGCharacterBase。ARPGCharacterBase是一个C++类，我们可以看一部分ARPGCharacterBase.h文件中的代码来大致了解这个类的作用。
 
 ```c++
 /** Base class for Character, Designed to be blueprinted */
@@ -80,7 +82,13 @@ public:
 }
 ```
 
-我们可以看到ARPGCharacterBase中，包含了一些具有普遍性的方法。例如获取血量 GetHealth()，或者获取移动速度GetMoveSpeed()等。
+我们可以看到这个类中，包含了一些具有普遍性的方法。例如获取血量 GetHealth()，或者获取移动速度GetMoveSpeed()等。ARPGCharacterBase中还包含了许多方法，不过目前我们只需要知道ActionPRG项目中的角色的基类是ARPGCharacterBase就行了。
+
+### 4.1.2 BP_Character
+
+### 4.1.3 BP_PlayerCharacter
+
+### 4.1.4 BP_PlayerController
 
 ### 4.2 武器相关功能
 
