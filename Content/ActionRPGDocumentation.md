@@ -36,7 +36,7 @@ Gameplay Ability System(GAS)是一个高度灵活的框架，可用于构建你�
 
 本章介绍了ActionRPG项目中各项功能的实现方法，当然，ActionRPG是一个庞大复杂且在不断更新的项目，同时本人对UE4的理解水平还有待提升，因此本章介绍的功能实现可能与ActionRPG真正实现方法有一定出入，
 
-### 4.1 角色与摄像机的移动
+### 4.1 角色与摄像机的基本移动
 
 ### 4.1.1  ARPGCharacterBase
 
@@ -86,7 +86,7 @@ public:
 
 ### 4.1.2 BP_Character
 
-
+BP_Character是一个蓝图类，这个类继承了ARPGCharacterBase。我们来看看这个类中有哪些Component。
 
 ### 4.1.3 BP_PlayerCharacter
 
