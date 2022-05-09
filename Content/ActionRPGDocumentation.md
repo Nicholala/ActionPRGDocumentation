@@ -178,13 +178,13 @@ BP_Character是一个蓝图类，是游戏中玩家与NPC的基类，这个类�
 
 现在，我们已经了解了**BP_Character**的是如何创建的，并且知道了它包含了哪些组件。接下来就让我们一起来看看**BP_PlayerCharacter**的一个具体应用**BP_PlayerCharacter**。
 
-![https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/BP_PlayerCharacter01.png)
+![image-BP_PlayerCharacter01](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/BP_PlayerCharacter01.png)
 
 在BP_Character的基础上，BP_PlayerCharacter添加了一个弹簧臂（SpringArm）并在上面绑定了一个摄像机。
 
 接下来，我们选中网格体组件，并按照下图进行设置。为网格体选择动画以及骨骼。
 
-![https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/BP_PlayerCharacter02.png)
+![image-BP_PlayerCharacter02](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/BP_PlayerCharacter02.png)
 
 做完这些操作后，我们的角色就算创建好了。
 
