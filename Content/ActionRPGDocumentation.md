@@ -28,9 +28,33 @@
 
 ### 2.1 UObject
 
+UObject是UE4中统一的基类，UE4的所有对象一切都是从UObject中派生出来的。
+
+UObject包含了一些基础且广泛的方法包含元数据、反射生成、GC垃圾回收、序列化、编辑器可见等。
+
 ### 2.2 Actor
 
+有了UObject只后，Actor便从Object之上派生出来了。在UObject的基础上，Actor具有了更多的方法包括Replication、Spawn、Tick等。
+
+Actor是UE中最重要的角色之一，组织庞大，最常见的有StaticMeshActor, CameraActor和 PlayerStartActor等。Actor之间还可以互相“嵌套”，拥有相对的“父子”关系。
+
 ### 2.3 Component
+
+Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需要Component。Componnent就像Actor的装备，让Actor具有了各种各样的技能。
+
+#### 2.4 Level
+
+#### 2.5 World
+
+#### 2.4 GameInstance
+
+#### 2.5 Pawn
+
+#### 2.6 Controller
+
+#### 2.7 GameMode
+
+#### 2.8 Player
 
 ## 3.  GAS系统
 
@@ -118,7 +142,7 @@ Tags
 
 本章介绍了ActionRPG项目中各项功能的实现方法，当然，ActionRPG是一个庞大复杂且在不断更新的项目，同时本人对UE4的理解水平还有待提升，因此本章介绍的功能实现可能与ActionRPG真正实现方法有一定出入，
 
-### 4.1 角色与摄像机的基本移动
+### 4.1 角色的基本移动与摄像机旋转
 
 #### 4.1.1  ARPGCharacterBase
 
@@ -190,16 +214,30 @@ BP_Character是一个蓝图类，是游戏中玩家与NPC的基类，这个类�
 
 #### 4.1.4 BP_PlayerController
 
-#### 4.1.5 GameMode 
+角色创建好后，我们在UE4项目设置的输入中添加以下输入事件：
 
-#### 4.1.5 角色移动的实现
+![image-20220509222433560](../Images/image-20220509222433560.png)
 
-在上述工作完成之后，我们就可以来具体实现角色的移动和摄像机移动了。
+接下来，我们就可以在 BP_PlayerController的事件图标中使用这些事件，BP_PlayerController中控制角色移动的蓝图如下：
 
-4.1.4 角色动画ABP_Player
+![image-20220509222915302](../Images/image-20220509222915302.png)
 
-### 4.2 武器相关功能
+我们可以通过添加移动输入（Add Movement Input）方法来实现角色的移动。其中，目标是玩家Pawn,即我们的BP_PlayerCharacter。WorldDirection则是摄像机的方向，我们通过获取摄像机旋转的向前与向右向量来获得。ScaleValue则是前进的值，即为我们刚才设置的MoveForward与MoveRight。这样，角色移动的蓝图就完成了。摄像机旋转的蓝图如下：
 
-### 4.3 攻击
+![image-20220513221758143](../Images/image-20220513221758143.png)
+
+设置好后角色的移动就完成了。
+
+ActionRPG中实际的实现方式会比上述方法更复杂一点，因为其中还包括了一些其他功能，例如判断是否处于自动战斗模式等以及通过触屏方式旋转摄像机等，这些功能会在后续介绍。
+
+### 4.2 添加武器
+
+4.2.1
+
+4.2.2
+
+4.2.3
+
+### 4.3
 
 ## 参考资料
