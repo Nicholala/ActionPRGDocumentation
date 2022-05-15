@@ -164,7 +164,7 @@ Tags
 
 #### 4.1.1  ARPGCharacterBase
 
-要让角色动起来，首先得有个角色。而ActionRPG中游戏的基类，就是ARPGCharacterBase。ARPGCharacterBase是一个C++类，我们可以看一部分ARPGCharacterBase.h文件中的代码来大致了解这个类的作用。
+要让角色动起来，首先得有个角色。而ActionRPG中角色的基类，就是ARPGCharacterBase。ARPGCharacterBase是一个C++类，我们可以看一部分ARPGCharacterBase.h文件中的代码来大致了解这个类的作用。
 
 ```c++
 /** Base class for Character, Designed to be blueprinted */
@@ -210,7 +210,7 @@ public:
 
 #### 4.1.2 BP_Character
 
-BP_Character是一个蓝图类，是游戏中玩家与NPC的基类，这个类继承自ARPGCharacterBase。让我们来看看这个类中有哪些Component。
+**BP_Character**是一个蓝图类，是游戏中玩家与NPC的基类，这个类继承自ARPGCharacterBase。让我们来看看这个类中有哪些Component。
 
 ![BP_Character组件](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/BP_Character01.png)
 
@@ -218,11 +218,11 @@ BP_Character是一个蓝图类，是游戏中玩家与NPC的基类，这个类�
 
 #### 4.1.3 BP_PlayerCharacter
 
-现在，我们已经了解了**BP_Character**的是如何创建的，并且知道了它包含了哪些组件。接下来就让我们一起来看看**BP_PlayerCharacter**的一个具体应用**BP_PlayerCharacter**。
+现在，我们已经了解了**BP_Character**的是如何创建的，并且知道了它包含了哪些组件。接下来就让我们一起来看看**BP_PlayerCharacter**的一个具体应用**BP_PlayerCharacter**。同样的，我们先来看看这个蓝图具有哪些组件：
 
 ![image-BP_PlayerCharacter01](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/BP_PlayerCharacter01.png)
 
-在BP_Character的基础上，BP_PlayerCharacter添加了一个弹簧臂（SpringArm）并在上面绑定了一个摄像机。
+可以看出，在BP_Character的基础上，BP_PlayerCharacter添加了一个弹簧臂（SpringArm）并在上面绑定了一个摄像机。
 
 接下来，我们选中网格体组件，并按照下图进行设置。为网格体选择动画以及骨骼。
 
@@ -240,7 +240,7 @@ BP_Character是一个蓝图类，是游戏中玩家与NPC的基类，这个类�
 
 ![CharacterMove](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/CharacterMove.png)
 
-我们可以通过添加移动输入（Add Movement Input）方法来实现角色的移动。其中，目标是玩家Pawn,即我们的BP_PlayerCharacter。WorldDirection则是摄像机的方向，我们通过获取摄像机旋转的向前与向右向量来获得。ScaleValue则是前进的值，即为我们刚才设置的MoveForward与MoveRight。这样，角色移动的蓝图就完成了。摄像机旋转的蓝图如下：
+我们可以通过添加移动输入（Add Movement Input）方法来实现角色的移动。其中，目标是玩家Pawn,即我们的BP_PlayerCharacter。WorldDirection则是摄像机的方向，我们通过获取摄像机旋转的向前与向右向量来获得。ScaleValue则是前进的值，即为我们刚才设置的MoveForward与MoveRight。这样，角色移动的蓝图就完成了。控制摄像机旋转的蓝图如下：
 
 ![CameraRoll](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/CameraRoll.png)
 
