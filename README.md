@@ -28,7 +28,7 @@ https://github.com/Nicholala/ActionPRGDocumentation
 
 ## 2. UE4 GamePlay架构
 
-在学习ActionRPG之前，我们需要了解Character的GamePlay架构，这样会有助于我们理解ActionPRG中的各个蓝图具体实现的是什么功能，以及为什么要用这种蓝图实现这个功能。
+在学习ActionRPG之前，我们需要了解UE的GamePlay架构，这样会有助于我们理解ActionPRG中的各个蓝图具体实现的是什么功能，以及为什么要用这种蓝图实现这个功能。
 
 ### 2.1 UObject
 
@@ -42,19 +42,23 @@ https://github.com/Nicholala/ActionPRGDocumentation
 
 Actor是UE中最重要的角色之一，组织庞大，最常见的有`StaticMeshActor`, `CameraActor`和 `PlayerStartActor`等。Actor之间还可以互相“嵌套”，拥有相对的“父子”关系。
 
-#### 2.2.2 Component
+#### 2.2.2 组件Component
 
-Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需要Component。Componnent就像Actor的装备，让Actor具有了各种各样的技能。与Actor一样，Component也是继承自UObject。
+Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需要Component。Component就像Actor的装备，让Actor具有了各种各样的技能。与Actor一样，Component也是继承自UObject。
 
 #### 2.2.3 Actor与Component之间的关系
 
-Actor可以看作Component的容器，引用官方文档的例子：汽车上的车轮、方向盘以及车身和车灯等都可以看作Component，而汽车本身就是 Actor。
+Actor可以看作Component的容器，引用官方文档的例子：汽车上的车轮、方向盘以及车身和车灯等都可以看作Component，而汽车本身就是 Actor。组件必须绑定在Actor身上，它们无法单独存在。
 
 看到这里，如果你有Unity基础的话，应该会将Actor与Unity中的GameObject联系起来。但其实两者是有一些不同的。Actor并没有像GameObject一样自带Transform。这是因为UE认为Actor并不一定是实例化的事物，也可以是一些概念性的事物，例如游戏规则、游戏模式，它们在游戏中并没有实实在在的三维坐标，但在UE中，这些概念也是Actor。从这里，我们也可以得知，Actor并不只是实例化的对象，也可以是概念性的概念。
 
+现在我们得知了Actor并不天生就是实例化的对象，而决定Actor是否可以实例化的正是Component。除此之外，Actor之间的父子关系其实也是通过Component完成的。
 
+Actor只提供了基本的创建销毁，网络复制，事件触发等一些逻辑性的功能。而其他的功能都是由Component实现的。这也印证了Actor可以看作Component的容器这一说法。
 
 ### 2.3 Level 与 World
+
+如果我们将Actor看成演员的话，拿演员们表演的舞台就是Level。
 
 #### 2.3.1 Level
 
@@ -70,23 +74,31 @@ World是一个容器，包含了游戏中的所有关卡。它可以处理关卡
 
 ### 2.4 Pawn 与 Character
 
+#### 2.4.1 Pawn
+
 **Pawn** 是Actor的子类，它可以充当游戏中的化身或人物（例如游戏中的角色）。Pawn可以由玩家控制，也可以由游戏AI控制并以非玩家角色（NPC）的形式存在于游戏中。在ActionRPG中，我们的主角就是由玩家控制的Pawn,而敌人则是由AI控制的Pawn。
 
 当Pawn被人类玩家或AI玩家控制时，它被视为`已被控制（Possessed）`。相反，当Pawn未被人类玩家或AI玩家控制时，它被视为 `未被控制（Unpossessed）`。
 
-### 2.6 Character
+#### 2.4.2 Character
 
 Character是类人式的Pawn。默认情况下，它带有一个用于碰撞的胶囊组件和一个角色移动组件。它可以执行类似人类的基本动作，可以流畅地复制网络上的动作，还具有一些与动画相关的功能。
 
-### 2.4 GameInstance
+#### 2.4.3 
+
+### 2.5GameInstance
 
 
 
-### 2.7 Controller
+### 2.6 Controller
 
 默认情况下，控制器（Controllers）和 Pawn 之间是一对一的关系；也就是说，每个控制器在某个时间点只能控制一个 Pawn。此外，在游戏期间生成的 Pawn 不会被控制器自动控制。
 
-### 2.8 GameMode
+#### 2.6.1 PlayerController
+
+#### 2.6.2 AIController
+
+### 2.7 GameMode
 
 即使最开放的游戏也拥有基础规则，而这些规则构成了 **Game Mode**。在最基础的层面上，这些规则包括：
 
@@ -100,6 +112,8 @@ Character是类人式的Pawn。默认情况下，它带有一个用于碰撞的�
 **角色（Character）** 是Pawn Actor的子类，旨在用作玩家角色。角色子类包括碰撞设置、双足运动的输入绑定，以及用于控制运动的附加代码。
 
 ## 3.  GAS系统
+
+
 
 GAS是一个复杂的系统，本章仅仅是对GAS的一些介绍，想深入了解的同学可以前往https://github.com/tranek/GASDocumentation进行学习。
 
