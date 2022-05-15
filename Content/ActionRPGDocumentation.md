@@ -20,11 +20,15 @@
 
 ### 1.4 关于本文档
 
-本文档地址：https://github.com/Nicholala/ActionPRGDocumentation
+#### 1.4.1 本文档地址
+
+https://github.com/Nicholala/ActionPRGDocumentation
+
+#### 1.4.2 本文档结构
 
 ## 2. UE4 GamePlay架构
 
-在学习ActionRPG之前，我们需要了解UE4 的GamePlay架构，这样会有助于我们理解ActionPRG中的各个蓝图具体实现的是什么功能，以及为什么要用这种蓝图实现这个功能。
+在学习ActionRPG之前，我们需要了解**UE4**的GamePlay架构，这样会有助于我们理解ActionPRG中的各个蓝图具体实现的是什么功能，以及为什么要用这种蓝图实现这个功能。
 
 ### 2.1 UObject
 
@@ -42,19 +46,33 @@ Actor是UE中最重要的角色之一，组织庞大，最常见的有StaticMesh
 
 Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需要Component。Componnent就像Actor的装备，让Actor具有了各种各样的技能。
 
-#### 2.4 Level
+引用官方文档的例子：汽车上的车轮、方向盘以及车身和车灯等都可以看作Component，而汽车本身就是 Actor。
 
-#### 2.5 World
+### 2.4 Level
 
-#### 2.4 GameInstance
+**Level**也是继承于**UObject**。**Level**相当于**Actor**的容器。
 
-#### 2.5 Pawn
+### 2.5 World
 
-#### 2.6 Controller
+**世界场景（World）** 是一个容器，包含了游戏中的所有关卡。它可以处理关卡流送，还能生成（创建）动态Actor。
 
-#### 2.7 GameMode
+### 2.4 GameInstance
 
-#### 2.8 Player
+### 2.5 Pawn
+
+**Pawn** 是Actor的子类，它可以充当游戏中的化身或人物（例如游戏中的角色）。Pawn可以由玩家控制，也可以由游戏AI控制并以非玩家角色（NPC）的形式存在于游戏中。
+
+当Pawn被人类玩家或AI玩家控制时，它被视为 **已被控制（Possessed）**。相反，当Pawn未被人类玩家或AI玩家控制时，它被视为 **未被控制（Unpossessed）**。
+
+### 2.6 Controller
+
+### 2.7 GameMode
+
+### 2.8 Player
+
+### 2.9 Character
+
+**角色（Character）** 是Pawn Actor的子类，旨在用作玩家角色。角色子类包括碰撞设置、双足运动的输入绑定，以及用于控制运动的附加代码。
 
 ## 3.  GAS系统
 
@@ -216,15 +234,15 @@ BP_Character是一个蓝图类，是游戏中玩家与NPC的基类，这个类�
 
 角色创建好后，我们在UE4项目设置的输入中添加以下输入事件：
 
-![image-20220509222433560](../Images/image-20220509222433560.png)
+![InputSettings](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/InputSettings.png)
 
 接下来，我们就可以在 BP_PlayerController的事件图标中使用这些事件，BP_PlayerController中控制角色移动的蓝图如下：
 
-![image-20220509222915302](../Images/image-20220509222915302.png)
+![CharacterMove](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/CharacterMove.png)
 
 我们可以通过添加移动输入（Add Movement Input）方法来实现角色的移动。其中，目标是玩家Pawn,即我们的BP_PlayerCharacter。WorldDirection则是摄像机的方向，我们通过获取摄像机旋转的向前与向右向量来获得。ScaleValue则是前进的值，即为我们刚才设置的MoveForward与MoveRight。这样，角色移动的蓝图就完成了。摄像机旋转的蓝图如下：
 
-![image-20220513221758143](../Images/image-20220513221758143.png)
+![CameraRoll](https://github.com/Nicholala/ActionPRGDocumentation/blob/master/Images/CameraRoll.png)
 
 设置好后角色的移动就完成了。
 
@@ -232,11 +250,11 @@ ActionRPG中实际的实现方式会比上述方法更复杂一点，因为其�
 
 ### 4.2 添加武器
 
-4.2.1
+#### 4.2.1
 
-4.2.2
+#### 4.2.2
 
-4.2.3
+#### 4.2.3
 
 ### 4.3
 
