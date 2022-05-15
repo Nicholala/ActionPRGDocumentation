@@ -32,21 +32,19 @@ https://github.com/Nicholala/ActionPRGDocumentation
 
 ### 2.1 UObject
 
-UObject是UE4中统一的基类，UE4的所有对象一切都是从UObject中派生出来的。
-
-UObject包含了一些基础且广泛的方法包含元数据、反射生成、GC垃圾回收、序列化、编辑器可见等。
+在C++中，`UObject`是所有Object的基类，UObject包含了一些基础且广泛的功能，例如`元数据（UProperty）`、`反射生成`、`GC垃圾回收`、`序列化`、`编辑器可见（UProperty）`等。
 
 ### 2.2 Actor
 
 有了UObject只后，Actor便从Object之上派生出来了。在UObject的基础上，Actor具有了更多的方法包括Replication、Spawn、Tick等。
 
-Actor是UE中最重要的角色之一，组织庞大，最常见的有StaticMeshActor, CameraActor和 PlayerStartActor等。Actor之间还可以互相“嵌套”，拥有相对的“父子”关系。
+Actor是UE中最重要的角色之一，组织庞大，最常见的有`StaticMeshActor`, `CameraActor`和 `PlayerStartActor`等。Actor之间还可以互相“嵌套”，拥有相对的“父子”关系。
 
 ### 2.3 Component
 
 Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需要Component。Componnent就像Actor的装备，让Actor具有了各种各样的技能。
 
-引用官方文档的例子：汽车上的车轮、方向盘以及车身和车灯等都可以看作Component，而汽车本身就是 Actor。
+Actor可以看作Component的容器，引用官方文档的例子：汽车上的车轮、方向盘以及车身和车灯等都可以看作Component，而汽车本身就是 Actor。
 
 ### 2.4 Level
 
@@ -64,13 +62,19 @@ Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需�
 
 当Pawn被人类玩家或AI玩家控制时，它被视为 **已被控制（Possessed）**。相反，当Pawn未被人类玩家或AI玩家控制时，它被视为 **未被控制（Unpossessed）**。
 
-### 2.6 Controller
+### 2.6 Character
 
-### 2.7 GameMode
+Character是类人式的Pawn。默认情况下，它带有一个用于碰撞的胶囊组件和一个角色移动组件。它可以执行类似人类的基本动作，可以流畅地复制网络上的动作，还具有一些与动画相关的功能。
 
-### 2.8 Player
+### 2.7 Controller
 
-### 2.9 Character
+默认情况下，控制器（Controllers）和 Pawn 之间是一对一的关系；也就是说，每个控制器在某个时间点只能控制一个 Pawn。此外，在游戏期间生成的 Pawn 不会被控制器自动控制。
+
+### 2.8 GameMode
+
+### 2.9 Player
+
+### 
 
 **角色（Character）** 是Pawn Actor的子类，旨在用作玩家角色。角色子类包括碰撞设置、双足运动的输入绑定，以及用于控制运动的附加代码。
 
@@ -257,5 +261,9 @@ ActionRPG中实际的实现方式会比上述方法更复杂一点，因为其�
 #### 4.2.3
 
 ### 4.3
+
+### 4.3 药水
+
+
 
 ## 参考资料
