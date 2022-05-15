@@ -28,43 +28,59 @@ https://github.com/Nicholala/ActionPRGDocumentation
 
 ## 2. UE4 GamePlay架构
 
-在学习ActionRPG之前，我们需要了解**UE4**的GamePlay架构，这样会有助于我们理解ActionPRG中的各个蓝图具体实现的是什么功能，以及为什么要用这种蓝图实现这个功能。
+在学习ActionRPG之前，我们需要了解Character的GamePlay架构，这样会有助于我们理解ActionPRG中的各个蓝图具体实现的是什么功能，以及为什么要用这种蓝图实现这个功能。
 
 ### 2.1 UObject
 
-在C++中，`UObject`是所有Object的基类，UObject包含了一些基础且广泛的功能，例如`元数据（UProperty）`、`反射生成`、`GC垃圾回收`、`序列化`、`编辑器可见（UProperty）`等。
+在C++中，UObject是所有Object的基类，UObject包含了一些基础且广泛的功能，例如`元数据（UProperty）`、`反射生成`、`GC垃圾回收`、`序列化`、`编辑器可见（UProperty）`等。
 
-### 2.2 Actor
+### 2.2 Actor 与 Component
 
-有了UObject只后，Actor便从Object之上派生出来了。在UObject的基础上，Actor具有了更多的方法包括Replication、Spawn、Tick等。
+#### 2.2.1 Actor
+
+有了UObject只后，Actor便从UObject之上派生出来了。在UObject的基础上，Actor具有了更多的方法包括`Replication`、`Spawn`、`Tick`等。
 
 Actor是UE中最重要的角色之一，组织庞大，最常见的有`StaticMeshActor`, `CameraActor`和 `PlayerStartActor`等。Actor之间还可以互相“嵌套”，拥有相对的“父子”关系。
 
-### 2.3 Component
+#### 2.2.2 Component
 
-Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需要Component。Componnent就像Actor的装备，让Actor具有了各种各样的技能。
+Actor仅具有一些最基本的方法，想让Actor具有各个功能，则需要Component。Componnent就像Actor的装备，让Actor具有了各种各样的技能。与Actor一样，Component也是继承自UObject。
+
+#### 2.2.3 Actor与Component之间的关系
 
 Actor可以看作Component的容器，引用官方文档的例子：汽车上的车轮、方向盘以及车身和车灯等都可以看作Component，而汽车本身就是 Actor。
 
-### 2.4 Level
+看到这里，如果你有Unity基础的话，应该会将Actor与Unity中的GameObject联系起来。但其实两者是有一些不同的。Actor并没有像GameObject一样自带Transform。这是因为UE认为Actor并不一定是实例化的事物，也可以是一些概念性的事物，例如游戏规则、游戏模式，它们在游戏中并没有实实在在的三维坐标，但在UE中，这些概念也是Actor。从这里，我们也可以得知，Actor并不只是实例化的对象，也可以是概念性的概念。
 
-**Level**也是继承于**UObject**。**Level**相当于**Actor**的容器。
 
-### 2.5 World
 
-**世界场景（World）** 是一个容器，包含了游戏中的所有关卡。它可以处理关卡流送，还能生成（创建）动态Actor。
+### 2.3 Level 与 World
 
-### 2.4 GameInstance
+#### 2.3.1 Level
 
-### 2.5 Pawn
+Level也是继承于UObject。Level相当于Actor的容器。
 
-**Pawn** 是Actor的子类，它可以充当游戏中的化身或人物（例如游戏中的角色）。Pawn可以由玩家控制，也可以由游戏AI控制并以非玩家角色（NPC）的形式存在于游戏中。
+#### 2.3.2 World
 
-当Pawn被人类玩家或AI玩家控制时，它被视为 **已被控制（Possessed）**。相反，当Pawn未被人类玩家或AI玩家控制时，它被视为 **未被控制（Unpossessed）**。
+World是一个容器，包含了游戏中的所有关卡。它可以处理关卡流送，还能生成（创建）动态Actor。
+
+#### 2.3.3 Level与World的关系
+
+
+
+### 2.4 Pawn 与 Character
+
+**Pawn** 是Actor的子类，它可以充当游戏中的化身或人物（例如游戏中的角色）。Pawn可以由玩家控制，也可以由游戏AI控制并以非玩家角色（NPC）的形式存在于游戏中。在ActionRPG中，我们的主角就是由玩家控制的Pawn,而敌人则是由AI控制的Pawn。
+
+当Pawn被人类玩家或AI玩家控制时，它被视为`已被控制（Possessed）`。相反，当Pawn未被人类玩家或AI玩家控制时，它被视为 `未被控制（Unpossessed）`。
 
 ### 2.6 Character
 
 Character是类人式的Pawn。默认情况下，它带有一个用于碰撞的胶囊组件和一个角色移动组件。它可以执行类似人类的基本动作，可以流畅地复制网络上的动作，还具有一些与动画相关的功能。
+
+### 2.4 GameInstance
+
+
 
 ### 2.7 Controller
 
@@ -72,9 +88,14 @@ Character是类人式的Pawn。默认情况下，它带有一个用于碰撞的�
 
 ### 2.8 GameMode
 
-### 2.9 Player
+即使最开放的游戏也拥有基础规则，而这些规则构成了 **Game Mode**。在最基础的层面上，这些规则包括：
 
-### 
+- 出现的玩家和观众数量，以及允许的玩家和观众最大数量。
+- 玩家进入游戏的方式，可包含选择生成地点和其他生成/重生成行为的规则。
+- 游戏是否可以暂停，以及如何处理游戏暂停。
+- 关卡之间的过渡，包括游戏是否以动画模式开场。
+
+### 2.9 Player
 
 **角色（Character）** 是Pawn Actor的子类，旨在用作玩家角色。角色子类包括碰撞设置、双足运动的输入绑定，以及用于控制运动的附加代码。
 
