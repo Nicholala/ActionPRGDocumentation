@@ -115,7 +115,11 @@ Tracy Fullerton 与 Chris Swain 在《游戏设计梦工厂》中提出了形式
 
 ## 3.  GameAbilitySystem(GAS)
 
-`GAS`是一个复杂的系统，本章仅仅是对`GAS`的一些介绍，想深入了解的同学可以前往https://github.com/tranek/GASDocumentation进行学习。
+`GAS`是一个复杂的系统，本章仅仅是对`GAS`的一些介绍，想深入了解的同学可以前往以下地址进行学习。
+
+文档：https://github.com/tranek/GASDocumentation
+
+中文文档：https://github.com/BillEliot/GASDocumentation_Chinese
 
 ### 3.1 什么是GAS
 
@@ -161,9 +165,90 @@ ASC是负责管理一切GAS相关交互的组件([UAbilitySystemComponent](https
  */
 ```
 
-通过上面的介绍，我们可以知道，ASC主要通过三个方面来管理技能，即游戏技能GameplayAbilities、游戏效果GameplayEffects、以及属性GameplayAttributes。
+通过上面的介绍，我们可以知道，ASC主要通过三个方面来管理技能，即`游戏技能GameplayAbilities`、`游戏效果GameplayEffects`、以及`属性GameplayAttributes`。
 
-#### 3.2.2 游戏技能 Gameplay Abilities(GA)
+####  3.2.2游戏标签 Gameplay Tags
+
+`FGameplayTag`是由`GameplayTagManager`注册的形似Parent.Child.Grandchild...的层级Name。我们可以使用这些标签来描述对象的状态，例如为对象添加眩晕Debuff,可以给一个`State.Debuff.Stun`的`GameplayTag`。
+
+`GameplayTags`需要在`DefaultGameplayTag.ini`中提前定义，在`ActionRpg`中的定义如下:
+
+```c++
+[/Script/GameplayTags.GameplayTagsSettings]
+ImportTagsFromConfig=True
+WarnOnInvalidTags=True
+FastReplication=False
+InvalidTagCharacters="\"\',"
+NumBitsForContainerSize=6
+NetIndexFirstBitSegment=16
++GameplayTagList=(Tag="Ability.Item",DevComment="")
++GameplayTagList=(Tag="Ability.Melee",DevComment="")
++GameplayTagList=(Tag="Ability.Melee.Close",DevComment="")
++GameplayTagList=(Tag="Ability.Melee.Far",DevComment="")
++GameplayTagList=(Tag="Ability.Ranged",DevComment="")
++GameplayTagList=(Tag="Ability.Skill",DevComment="")
++GameplayTagList=(Tag="Cooldown.Skill",DevComment="")
++GameplayTagList=(Tag="EffectContainer.Default",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Player.Combo.BurstPound",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Player.Combo.ChestKick",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Player.Combo.FrontalAttack",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Player.Combo.GroundPound",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Player.Combo.JumpSlam",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Shared.UseItem",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Shared.UseSkill",DevComment="")
++GameplayTagList=(Tag="Event.Montage.Shared.WeaponHit",DevComment="")
++GameplayTagList=(Tag="Status.DamageImmune",DevComment="")
+
+```
+
+在ActionPRG中，药水Potion的Tag是`Ability.item`，法力的tag则是`Ability.Melee`。
+
+#### 3.2.3属性Attributes
+
+Attributes是由[FGameplayAttributeData](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayAttributeData/index.html)结构体定义的浮点值。
+
+Attribute一般应该只能由GameplayEffect修改, 这样ASC才能预测(Predict)其改变.
+
+在ActionRPG中，这些Attributes定义如下
+
+```c++
+
+```
+
+
+
+#### 3.2.4属性集AttibuteSet
+
+AttributeSet用于定义, 保存以及管理对Attribute的修改.
+
+在AttributeSet头文件顶部添加以下宏块会自动为每个Attributes生成getter和setter函数。ActionRPG中的RPGAttributeSet.h文件也是这么做的。
+
+```c++
+// Uses macros from AttributeSet.h
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+```
+
+以生命值Health与最大生命值MaxHealth为例，在ActionRPG中，Attribute是这样定义的
+
+```c++
+/** Current Health, when 0 we expect owner to die. Capped by MaxHealth */
+	UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing=OnRep_Health)
+	FGameplayAttributeData Health;
+	ATTRIBUTE_ACCESSORS(URPGAttributeSet, Health)
+
+	/** MaxHealth is its own attribute, since GameplayEffects may modify it */
+	UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing=OnRep_MaxHealth)
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(URPGAttributeSet, MaxHealth)
+```
+
+
+
+#### 3.2.5  游戏技能 Gameplay Abilities(GA)
 
 Gameplay Abilities(GA)是游戏中Actor的行为或者是技能。比如冲刺、射箭、格挡等。
 
@@ -175,19 +260,21 @@ GA包含了技能的具体逻辑，同时提供了常用的一些属性，如技
 
 #### 3.2.3 游戏效果 Gameplay Effects
 
-Gameplay Effects是GA改变他人的Attributes 和 GameplayTags的途径。
+[GameplayEffect(GE)](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UGameplayEffect/index.html)是Ability修改其自身和其他[Attribute](https://github.com/BillEliot/GASDocumentation_Chinese#concepts-a)和[GameplayTag](https://github.com/BillEliot/GASDocumentation_Chinese#concepts-gt)的容器。
 
 ##### 3.2.3.1 Gameplay Effects的分类
 
 `GameplayEffects`有三种持续类型：立即（`Instant`），持续（ `Duration`），和无限（`Infinite`）。
 
-####  3.2.4 Tags
 
-Tags
 
-#### 3.2.5属性与属性集Attributes和AttibuteSet
+
+
+#### 
 
 #### 3.2.6Cues
+
+### 3.3 GAS在ActionRPG中的结构
 
 
 
