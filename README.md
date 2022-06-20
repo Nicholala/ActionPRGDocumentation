@@ -30,9 +30,13 @@ https://github.com/Nicholala/ActionPRGDocumentation
 
 在学习ActionRPG之前，我们需要了解UE的一些常用类，这些类也在ActionRPG中起着重要的作用。这样会有助于我们理解ActionPRG中的各个类具体实现的是什么功能。
 
+
+
 ## 2.1 UObject
 
 在C++中，UObject是所有Object的基类，UObject包含了一些基础且广泛的功能，例如`元数据（UProperty）`、`反射生成`、`GC垃圾回收`、`序列化`、`编辑器可见（UProperty）`等。
+
+
 
 ## 2.2 Actor 与 Component
 
@@ -56,6 +60,8 @@ Actor可以看作Component的容器，引用官方文档的例子：汽车上的
 
 Actor只提供了基本的创建销毁，网络复制，事件触发等一些逻辑性的功能。而其他的功能都是由Component实现的。这也印证了Actor可以看作Component的容器这一说法。
 
+
+
 ## 2.3 Level 与 World
 
 ### 2.3.1 Level
@@ -78,7 +84,7 @@ Level维护了一个Actor容器，World维护了一个Level容器，一方面支
 
 当`Pawn`被人类玩家或AI玩家控制时，它被视为`已被控制（Possessed）`。相反，当Pawn未被人类玩家或AI玩家控制时，它被视为 `未被控制（Unpossessed）`。
 
-#### 2.4.2 Character
+### 2.4.2 Character
 
 就像正方形也是长方形一样，`Character`可以理解为一种特殊的`Pawn`，即类人式的`Pawn`。默认情况下，它带有一个用于碰撞的胶囊组件和一个角色移动组件。它可以执行类似人类的基本动作，例如跳跃、爬行等。
 
@@ -121,23 +127,25 @@ Tracy Fullerton 与 Chris Swain 在《游戏设计梦工厂》中提出了形式
 
 中文文档：https://github.com/BillEliot/GASDocumentation_Chinese
 
+
+
 ## 3.1 什么是GAS
 
 *Gameplay Ability System(GAS)是一个高度灵活的框架，可用于构建你可能会在RPG或MOBA游戏中看到的技能和属性类型。你可以构建可供游戏中的角色使用的动作或被动技能，使这些动作导致各种属性累积或损耗的状态效果，实现约束这些动作使用的“冷却”计时器或资源消耗，更改技能等级及每个技能等级的技能效果，激活粒子或音效，等等。此系统可帮助你在任何现代RPG或MOBA游戏中设计、实现及高效关联各种游戏中的技能，既包括跳跃等简单技能，也包括你喜欢的角色的复杂技能集。*
 
 以上是官方文档对GAS的介绍，简单来说`GAS`是Epic官方提供的一款UE4插件，用于让程序员和策划设计玩法的系统。
 
-## 3.2 GAS的基本构成
+`GAS`是一个复杂的系统，包含了许多模块，接下来让我们来看看`GAS`具体包含了哪些部分，以及这些部分各自的作用是什么。
 
-在3.1节中，我们了解到`GAS`是一个复杂的系统，包含了许多模块，让我们来看看GAS具体包含了哪些部分，以及这些部分各自的作用是什么。
 
-### 3.2.1 ASC(Ability System Component)
 
-#### 3.2.1.1 ASC简介
+## 3.2 ASC(Ability System Component)
+
+### 3.2.1 ASC简介
 
 `ASC`是负责管理一切`GAS`相关交互的组件([UAbilitySystemComponent](https://docs.unrealengine.com/4.27/en-US/API/Plugins/GameplayAbilities/UAbilitySystemComponent/))，是`GAS`的中枢。任何要使用`Gameplay Ability`,有`Attributes`，或者接收`Gameplay Effects`的`Actor`必须包含一个`ASC`。
 
-#### 3.2.1.1 添加ASC组件
+### 3.2.2 添加ASC组件
 
 在前文中，我们提到了任何要使用`Gameplay Ability`,有`Attributes`，或者接收`Gameplay Effects`的`Actor`必须包含一个`ASC`。接下来让我们以ActionRPG为例，来看看如何添加ASC。
 
@@ -181,7 +189,7 @@ UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 
 这样ASC的添加就完成了。
 
-#### 3.2.1.2 ASC的作用
+### 3.2.3 ASC的作用
 
 我们先来看看在`ASC`源码中，虚幻官方对`ASC`的描述：
 
@@ -213,11 +221,18 @@ UAbilitySystemComponent* ARPGCharacterBase::GetAbilitySystemComponent() const
 
 简单来说，ASC主要通过三个方面来管理技能，即`游戏技能GameplayAbilities`、`游戏效果GameplayEffects`、以及`属性GameplayAttributes`。GAS的大部分功能都在ASC的源码中，想详细学习GAS的同学可以看看ASC的头文件来看看具体包含了哪些方法。
 
-###  3.2.2 游戏标签 Gameplay Tags
 
-`FGameplayTag`是由`GameplayTagManager`注册的形似Parent.Child.Grandchild...的层级Name。我们可以使用这些标签来描述对象的状态，例如为对象添加眩晕Debuff,可以给一个`State.Debuff.Stun`的`GameplayTag`。
 
-`GameplayTags`需要在`DefaultGameplayTag.ini`中提前定义，在`ActionRpg`中的定义如下:
+##  3.3 游戏标签 Gameplay Tags
+
+### 3.3.1 Gameplay Tags 简介
+
+*FGameplayTags是一种层级标签，如Parent.Child.GrandChild。*
+*通过GameplayTagManager进行注册。替代了原来的Bool，或Enum的结构，可以在玩法设计中更高效的标记对象的行为或状态。*
+
+### 3.3.2 Gameplay Tags 添加
+
+`GameplayTags`需要在`DefaultGameplayTag.ini`中提前定义，定义如下:
 
 ```c++
 [/Script/GameplayTags.GameplayTagsSettings]
@@ -246,19 +261,27 @@ NetIndexFirstBitSegment=16
 +GameplayTagList=(Tag="Status.DamageImmune",DevComment="")
 ```
 
-在ActionPRG中，药水Potion的Tag是`Ability.item`，法力的tag则是`Ability.Melee`。
+### 3.3.3  Gameplay Tags 的设计
 
-#### 3.2.3属性Attributes
+ActionRPG将Gameplay Tags 分成了 Ability、Cooldown、EffectContainer、Event、Status等几个大类。当要使用对应模块的时候，就可以访问对应的标签。合理设计Gameplay tags可以让我们更快的访问需要使用的对象，也可以让我们清晰的追溯tags的来源。
 
-Attributes是由[FGameplayAttributeData](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayAttributeData/index.html)结构体定义的浮点值。
 
-Attribute一般应该只能由GameplayEffect修改, 这样ASC才能预测(Predict)其改变.
 
-#### 3.2.4属性集AttibuteSet
+## 3.4 属性Attributes与属性集AttibuteSet
+
+### 3.4.1  属性Attributes 简介
+
+*Attributes是由[FGameplayAttributeData](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/FGameplayAttributeData/index.html)结构体定义的浮点值*。
+
+`Atributes`包含了两个float变量：`Base Value`与`Current Value`。其中Base Value代表基础指，`Current Value`代表临时值。例如一些游戏中角色获得的临时Buff就属于改变的`Current Value`,而buff结束后，则会变回`Base Value`。
+
+`Attributes`一般应该只能由`GameplayEffect`修改, 这样`ASC`才能预测(Predict)其改变.
+
+### 3.4.2  属性集Attribute Set 简介
 
 AttributeSet用于定义, 保存以及管理对Attribute的修改.
 
-
+### 3.4.3 创建AttibuteSet
 
 在AttributeSet头文件顶部添加以下宏块会自动为每个Attributes生成getter和setter函数。ActionRPG中的RPGAttributeSet.h文件也是这么做的。
 
@@ -301,45 +324,236 @@ AttributeSet用于定义, 保存以及管理对Attribute的修改.
 	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldValue);
 ```
 
-3.2.4.3 Pre
+### 3.4.4 AttributeSet的初始化
 
-### 3.2.5  游戏技能 Gameplay Abilities(GA)
+ActionRPG使用了DataTable与GE来对AttributeSet进行初始化。
+
+在DataTable文件夹中，我们可以看见名为StartingStats的DataTable。该DataTable可以通过CSV快速导入。
+
+![DataTable](Images/3.4.4.1 DataTable.png)
+
+创建好DataTable以后，在GE_PlayerStats上的Gameplay Effect条目里，对这些属性进行了初始化。
+
+![GE初始化](Images/3.4.4.2 GE初始化.png)
+
+每一个`Modifier`对应一个要初始化的`Attributes`，`Modifier Op`为`Override`，表示进行的是初始化操作。`Modifier Magnitude（修改值）`选择`Scalable Float`，填入想设置的默认值。这里填入的是1，代表着是`DataTable中`等级1的MaxHealth。其他属性也可以这样设置，值得注意的是，如果要同时设置Health与MaxHealth,则应先设置MaxHealth，否则，Health会被置为0。
+
+设置好以后，在BP_PlayerCharacter中应用该GE:
+
+![应用GE](Images/3.4.4.3 应用GE.png)
+
+这样就完成设置了。
+
+### 3.4.6  监听Attributes的变化
+
+#### 3.4.6.1 PreAttributesChange()
+
+`PreAttributesChange()`在`Current Value`被改变前调用，对应`Infinite`和`Has Duration`的`GE`。
+
+ActionPRG通过这个方法来实现当生命值上限或法力值上限变化时，等比例更改生命值或者法力值：
+
+```cpp
+void URPGAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	// This is called whenever attributes change, so for max health/mana we want to scale the current totals to match
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	if (Attribute == GetMaxHealthAttribute())
+	{
+		AdjustAttributeForMaxChange(Health, MaxHealth, NewValue, GetHealthAttribute());
+	}
+	else if (Attribute == GetMaxManaAttribute())
+	{
+		AdjustAttributeForMaxChange(Mana, MaxMana, NewValue, GetManaAttribute());
+	}
+}
+```
+
+```c++
+void URPGAttributeSet::AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty)
+{
+	UAbilitySystemComponent* AbilityComp = GetOwningAbilitySystemComponent();
+	const float CurrentMaxValue = MaxAttribute.GetCurrentValue();
+	if (!FMath::IsNearlyEqual(CurrentMaxValue, NewMaxValue) && AbilityComp)
+	{
+		// Change current value to maintain the current Val / Max percent
+		const float CurrentValue = AffectedAttribute.GetCurrentValue();
+		float NewDelta = (CurrentMaxValue > 0.f) ? (CurrentValue * NewMaxValue / CurrentMaxValue) - CurrentValue : NewMaxValue;
+
+		AbilityComp->ApplyModToAttributeUnsafe(AffectedAttributeProperty, EGameplayModOp::Additive, NewDelta);
+	}
+}
+```
+
+#### 3.4.6.2 PostGameplayEffectExecute()
+
+`PostGameplayEffectExecute()`在`Base Value`改变后调用，对应`InstantGE`。
+
+ActionRPG通过这个方法来针对不同的属性改变进行对应的操作，源代码如下：
+
+```c++
+void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
+	UAbilitySystemComponent* Source = Context.GetOriginalInstigatorAbilitySystemComponent();
+	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+
+	// Compute the delta between old and new, if it is available
+	float DeltaValue = 0;
+	if (Data.EvaluatedData.ModifierOp == EGameplayModOp::Type::Additive)
+	{
+		// If this was additive, store the raw delta value to be passed along later
+		DeltaValue = Data.EvaluatedData.Magnitude;
+	}
+
+	// Get the Target actor, which should be our owner
+	AActor* TargetActor = nullptr;
+	AController* TargetController = nullptr;
+	ARPGCharacterBase* TargetCharacter = nullptr;
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+		TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
+		TargetCharacter = Cast<ARPGCharacterBase>(TargetActor);
+	}
+
+	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
+	{
+		// Get the Source actor
+		AActor* SourceActor = nullptr;
+		AController* SourceController = nullptr;
+		ARPGCharacterBase* SourceCharacter = nullptr;
+		if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
+		{
+			SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
+			SourceController = Source->AbilityActorInfo->PlayerController.Get();
+			if (SourceController == nullptr && SourceActor != nullptr)
+			{
+				if (APawn* Pawn = Cast<APawn>(SourceActor))
+				{
+					SourceController = Pawn->GetController();
+				}
+			}
+
+			// Use the controller to find the source pawn
+			if (SourceController)
+			{
+				SourceCharacter = Cast<ARPGCharacterBase>(SourceController->GetPawn());
+			}
+			else
+			{
+				SourceCharacter = Cast<ARPGCharacterBase>(SourceActor);
+			}
+
+			// Set the causer actor based on context if it's set
+			if (Context.GetEffectCauser())
+			{
+				SourceActor = Context.GetEffectCauser();
+			}
+		}
+
+		// Try to extract a hit result
+		FHitResult HitResult;
+		if (Context.GetHitResult())
+		{
+			HitResult = *Context.GetHitResult();
+		}
+
+		// Store a local copy of the amount of damage done and clear the damage attribute
+		const float LocalDamageDone = GetDamage();
+		SetDamage(0.f);
+
+		if (LocalDamageDone > 0)
+		{
+			// Apply the health change and then clamp it
+			const float OldHealth = GetHealth();
+			SetHealth(FMath::Clamp(OldHealth - LocalDamageDone, 0.0f, GetMaxHealth()));
+
+			if (TargetCharacter)
+			{
+				// This is proper damage
+				TargetCharacter->HandleDamage(LocalDamageDone, HitResult, SourceTags, SourceCharacter, SourceActor);
+
+				// Call for all health changes
+				TargetCharacter->HandleHealthChanged(-LocalDamageDone, SourceTags);
+			}
+		}
+	}
+	else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		// Handle other health changes such as from healing or direct modifiers
+		// First clamp it
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+
+		if (TargetCharacter)
+		{
+			// Call for all health changes
+			TargetCharacter->HandleHealthChanged(DeltaValue, SourceTags);
+		}
+	}
+	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		// Clamp mana
+		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+
+		if (TargetCharacter)
+		{
+			// Call for all mana changes
+			TargetCharacter->HandleManaChanged(DeltaValue, SourceTags);
+		}
+	}
+	else if (Data.EvaluatedData.Attribute == GetMoveSpeedAttribute())
+	{
+		if (TargetCharacter)
+		{
+			// Call for all movespeed changes
+			TargetCharacter->HandleMoveSpeedChanged(DeltaValue, SourceTags);
+		}
+	}
+}
+```
+
+
+
+## 3.5 游戏技能 Gameplay Abilities(GA)
+
+### 3.5.1 GA简介
 
 Gameplay Abilities(GA)是游戏中Actor的行为或者是技能。比如冲刺、射箭、格挡等。
 
 可以通过C++或者蓝图来实现Abilities。
 
-##### 3.2.2.1 Gameplay Abilities的作用
+### 3.5.2Gameplay Abilities的作用
 
 GA包含了技能的具体逻辑，同时提供了常用的一些属性，如技能的冷却时间，技能等级等。除此之外，也可以绑定输入等。GA也支持同时激活多个Gameplay Abilities如冲刺攻击，或者在攻击的同时恢复生命等，都可以通过该系统实现。
 
-#### 3.2.3 游戏效果 Gameplay Effects
+### 3.5.3 添加GA
+
+## 3.6 游戏效果 Gameplay Effects(GE)
+
+### 3.6.1 Gameplay Effects简介
 
 [GameplayEffect(GE)](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UGameplayEffect/index.html)是Ability修改其自身和其他[Attribute](https://github.com/BillEliot/GASDocumentation_Chinese#concepts-a)和[GameplayTag](https://github.com/BillEliot/GASDocumentation_Chinese#concepts-gt)的容器。
 
-##### 3.2.3.1 Gameplay Effects的分类
+GE是修改Attribute的唯一渠道。
+
+### 3.6.2 Gameplay Effects的分类
 
 `GameplayEffects`有三种持续类型：立即（`Instant`），持续（ `Duration`），和无限（`Infinite`）。
 
+## 3.7Cues
 
 
 
+# 4.  ActionRpg 功能实现介绍
 
-#### 
+本章介绍了ActionRPG项目中各项功能的实现方法，当然，ActionRPG是一个庞大复杂且在不断更新的项目，同时本人对UE4的理解水平还有待提升，因此本章介绍的功能实现可能与ActionRPG真正实现方法有一定出入。
 
-#### 3.2.6Cues
+## 4.1 角色的基本移动与摄像机旋转
 
-### 3.3 GAS在ActionRPG中的结构
-
-
-
-## 4.  ActionRpg 功能实现介绍
-
-本章介绍了ActionRPG项目中各项功能的实现方法，当然，ActionRPG是一个庞大复杂且在不断更新的项目，同时本人对UE4的理解水平还有待提升，因此本章介绍的功能实现可能与ActionRPG真正实现方法有一定出入，
-
-### 4.1 角色的基本移动与摄像机旋转
-
-#### 4.1.1  ARPGCharacterBase
+### 4.1.1  ARPGCharacterBase
 
 要让角色动起来，首先得有个角色。而ActionRPG中角色的基类，就是ARPGCharacterBase。ARPGCharacterBase是一个C++类，我们可以看一部分ARPGCharacterBase.h文件中的代码来大致了解这个类的作用。
 
@@ -385,7 +599,7 @@ public:
 
 我们可以看到这个类中，包含了一些具有普遍性的方法。例如获取血量 GetHealth()，或者获取移动速度GetMoveSpeed()等。ARPGCharacterBase中还包含了许多方法，不过目前我们只需要知道ActionPRG项目中的角色的基类是ARPGCharacterBase就行了。
 
-#### 4.1.2 BP_Character
+### 4.1.2 BP_Character
 
 **BP_Character**是一个蓝图类，是游戏中玩家与NPC的基类，这个类继承自ARPGCharacterBase。让我们来看看这个类中有哪些Component。
 
@@ -393,7 +607,7 @@ public:
 
 包含了一个**胶囊体组件**，其中包含一个**箭头组件**以及一个**网格体组件**；还包含了一个**角色移动组件**与一个**ASC组件**。其中胶囊体组件是角色的碰撞体，也可以理解为物理体积；箭头组件代表了了角色移动的方向，方便开发时观察；在角色移动组件中，我们可以进行一些相关设置，例如将角色方向旋转至与移动方向一致等。至于ASC组件已经在第三节中介绍过，这里不再赘叙。
 
-#### 4.1.3 BP_PlayerCharacter
+### 4.1.3 BP_PlayerCharacter
 
 现在，我们已经了解了**BP_Character**的是如何创建的，并且知道了它包含了哪些组件。接下来就让我们一起来看看**BP_PlayerCharacter**的一个具体应用**BP_PlayerCharacter**。同样的，我们先来看看这个蓝图具有哪些组件：
 
@@ -407,7 +621,7 @@ public:
 
 做完这些操作后，我们的角色就算创建好了。
 
-#### 4.1.4 BP_PlayerController
+### 4.1.4 BP_PlayerController
 
 角色创建好后，我们在UE4项目设置的输入中添加以下输入事件：
 
@@ -425,20 +639,22 @@ public:
 
 ActionRPG中实际的实现方式会比上述方法更复杂一点，因为其中还包括了一些其他功能，例如判断是否处于自动战斗模式等以及通过触屏方式旋转摄像机等，这些功能会在后续介绍。
 
-### 4.2 添加武器
+## 4.2 添加武器
 
-#### 4.2.1
+### 4.2.1
 
-#### 4.2.2
+### 4.2.2
 
-#### 4.2.3
+### 4.2.3
 
-### 4.3
+## 4.3
 
-### 4.3 药水
+## 4.3 药水
 
-### 4.4 翻滚
+## 4.4 翻滚
 
-### 4.5 
+## 4.5 
 
 ## 参考资料
+
+PS:上传GitHub前图片地址前加上https://github.com/Nicholala/ActionPRGDocumentation/blob/master/。
