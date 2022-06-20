@@ -336,7 +336,7 @@ ActionRPG使用了DataTable与GE来对AttributeSet进行初始化。
 
 ![GE初始化](Images/3.4.4.2 GE初始化.png)
 
-每一个`Modifier`对应一个要初始化的`Attributes`，`Modifier Op`为`Override`，表示进行的是初始化操作。`Modifier Magnitude（修改值）`选择`Scalable Float`，填入想设置的默认值。这里填入的是1，代表着是`DataTable中`等级1的MaxHealth。其他属性也可以这样设置，值得注意的是，如果要同时设置Health与MaxHealth,则应先设置MaxHealth，否则，Health会被置为0。
+每一个`Modifier`对应一个要初始化的`Attributes`，`Modifier Op`为`Override`，表示进行的是初始化操作。`Modifier Magnitude（修改值）`选择`Scalable Float`，填入想设置的默认值。其他属性也可以这样设置，值得注意的是，如果要同时设置Health与MaxHealth,则应先设置MaxHealth，否则，Health会被置为0。
 
 设置好以后，在BP_PlayerCharacter中应用该GE:
 
@@ -531,17 +531,35 @@ GA包含了技能的具体逻辑，同时提供了常用的一些属性，如技
 
 ### 3.5.3 添加GA
 
+
+
 ## 3.6 游戏效果 Gameplay Effects(GE)
 
 ### 3.6.1 Gameplay Effects简介
 
 [GameplayEffect(GE)](https://docs.unrealengine.com/en-US/API/Plugins/GameplayAbilities/UGameplayEffect/index.html)是Ability修改其自身和其他[Attribute](https://github.com/BillEliot/GASDocumentation_Chinese#concepts-a)和[GameplayTag](https://github.com/BillEliot/GASDocumentation_Chinese#concepts-gt)的容器。
 
-GE是修改Attribute的唯一渠道。
+GE是修改Attribute的唯一渠道  。
 
 ### 3.6.2 Gameplay Effects的分类
 
-`GameplayEffects`有三种持续类型：立即（`Instant`），持续（ `Duration`），和无限（`Infinite`）。
+`GameplayEffects`有三种持续类型：立即（Instant），持续（ Duration），和无限（Infinite）。
+
+| 类型              | GameplayCue事件 | 何时使用                                                     |
+| ----------------- | --------------- | ------------------------------------------------------------ |
+| 立即（Instant）   | Execute         | 对`Attribute`中BaseValue立即进行的永久性修改. 其不会应用`GameplayTag`, 哪怕是一帧. |
+| 持续（ Duration） | Add & Remove    | 对`Attribute`中CurrentValue的临时修改和当`GameplayEffect`过期或手动移除时, 应用将要被移除的`GameplayTag`. 持续时间是在UGameplayEffect类/蓝图中明确的. |
+| 无限（Infinite）  | Add & Remove    | 对`Attribute`中CurrentValue的临时修改和当`GameplayEffect`移除时, 应用将要被移除的`GameplayTag`. 该类型自身永不过期且必须由某个Ability或`ASC`手动移除. |
+
+### 3.6.3 Modifier
+
+Modifier是GE修改Attributes的方式，modifier可以在GE的GamePlayEffect目录下添加。每一个Modifier对应者要修改的一条属性。
+
+### 3.6.4 ActionRPG中GE的一个应用：Potion
+
+![image-20220620185938266](Images/image-20220620185938266.png)
+
+
 
 ## 3.7Cues
 
